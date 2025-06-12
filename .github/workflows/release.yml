@@ -6,6 +6,11 @@ on:
       - 'v*' # 当推送以 v 开头的标签时触发，例如 v1.0.0
   workflow_dispatch: # 允许手动触发
 
+permissions:
+  contents: write # 允许写入内容
+  id-token: write # 允许使用 ID Token
+  actions: read # 允许读取 Actions
+
 jobs:
   build-windows:
     runs-on: windows-latest
