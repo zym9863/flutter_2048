@@ -1,0 +1,129 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # 当推送以 v 开头的标签时触发，例如 v1.0.0
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.27.0' # 使用稳定版本
+        channel: 'stable'
+        
+    - name: Enable Windows desktop
+      run: flutter config --enable-windows-desktop
+      
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Build Windows app
+      run: flutter build windows --release
+      
+    - name: Create Windows release archive
+      run: |
+        cd build/windows/x64/runner/Release
+        7z a -tzip ../../../../../flutter_2048_windows.zip *
+      
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-release
+        path: flutter_2048_windows.zip
+
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.27.0'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Build Android APK
+      run: flutter build apk --release --split-per-abi
+      
+    - name: Upload Android artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-release
+        path: build/app/outputs/flutter-apk/*.apk
+
+  release:
+    needs: [build-windows, build-android]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-release
+        path: ./artifacts/
+        
+    - name: Download Android artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: android-release
+        path: ./artifacts/
+        
+    - name: Get tag name
+      id: tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: Flutter 2048 ${{ steps.tag.outputs.tag }}
+        body: |
+          ## Flutter 2048 Release ${{ steps.tag.outputs.tag }}
+          
+          ### 📦 Downloads
+          - **Windows**: `flutter_2048_windows.zip` - Windows桌面应用程序
+          - **Android**: 
+            - `app-arm64-v8a-release.apk` - ARM64设备（推荐，现代手机）
+            - `app-armeabi-v7a-release.apk` - ARM32设备（老旧手机）
+            - `app-x86_64-release.apk` - x86_64设备（模拟器/平板）
+          
+          ### 🎮 游戏说明
+          这是一个经典的2048益智游戏的Flutter实现。
+          
+          ### 💾 安装说明
+          **Windows**: 下载并解压 `flutter_2048_windows.zip`，运行 `flutter_2048.exe`
+          
+          **Android**: 根据你的设备类型下载对应的APK文件并安装
+          - 大多数现代Android手机请下载 `app-arm64-v8a-release.apk`
+          - 较老的手机请下载 `app-armeabi-v7a-release.apk`
+          
+        draft: false
+        prerelease: false
+        files: |
+          ./artifacts/flutter_2048_windows.zip
+          ./artifacts/*.apk
+        token: ${{ secrets.GITHUB_TOKEN }}
