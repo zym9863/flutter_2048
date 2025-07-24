@@ -76,10 +76,10 @@ class GameBoard {
     bool moved = false;
     
     // 保存移动前的状态，用于检测是否有变化
-    List<List<int>> previousBoard = List.generate(
-      size, 
-      (i) => List.from(board[i])
-    );
+    // List<List<int>> previousBoard = List.generate(
+    //   size, 
+    //   (i) => List.from(board[i])
+    // );
 
     switch (direction) {
       case Direction.up:
