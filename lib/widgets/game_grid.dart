@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glass/glass.dart';
 import '../models/game_board.dart';
 import '../theme/app_theme.dart';
 import 'tile.dart';
@@ -18,22 +19,41 @@ class GameGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
-        color: AppTheme.darkBackground,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(color: AppTheme.neonBlue.withOpacity(0.3), width: 1.5),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.darkPurpleBackground.withOpacity(0.6),
+            AppTheme.darkBackground.withOpacity(0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20.0),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.neonBlue.withOpacity(0.1),
+            color: AppTheme.neonBlue.withOpacity(0.2),
+            blurRadius: 20,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 10,
-            spreadRadius: 1,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      child: Container(
+        padding: EdgeInsets.all(padding),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(
+            color: AppTheme.neonBlue.withOpacity(0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           // 分数显示
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
@@ -58,12 +78,7 @@ class GameGrid extends StatelessWidget {
                 ),
                 // 分数显示
                 Container(
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: AppTheme.darkPurpleBackground.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: AppTheme.neonBlue.withOpacity(0.5), width: 1),
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     children: [
                       const Text(
@@ -91,20 +106,39 @@ class GameGrid extends StatelessWidget {
                       ),
                     ],
                   ),
+                ).asGlass(
+                  tintColor: AppTheme.darkPurpleBackground,
+                  clipBorderRadius: BorderRadius.circular(12.0),
+                  blurX: 10,
+                  blurY: 10,
                 ),
               ],
             ),
           ),
-          // 网格背景 - 添加极细网格线
+          // 网格背景
           Container(
+            padding: EdgeInsets.all(spacing / 2),
             decoration: BoxDecoration(
-              color: AppTheme.darkBackground,
-              borderRadius: BorderRadius.circular(12.0),
-              image: DecorationImage(
-                image: const NetworkImage('https://transparenttextures.com/patterns/carbon-fibre.png'),
-                opacity: 0.05,
-                repeat: ImageRepeat.repeat,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppTheme.gridBackground.withOpacity(0.8),
+                  AppTheme.gridBackground.withOpacity(0.6),
+                ],
               ),
+              borderRadius: BorderRadius.circular(16.0),
+              border: Border.all(
+                color: AppTheme.neonBlue.withOpacity(0.1),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: GridView.builder(
               shrinkWrap: true,
@@ -156,7 +190,8 @@ class GameGrid extends StatelessWidget {
                 ),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

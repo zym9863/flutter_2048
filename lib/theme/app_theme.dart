@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // 主色调 - 深色背景
-  static const Color darkBackground = Color(0xFF0A1F3A);
-  static const Color darkPurpleBackground = Color(0xFF2A0F36);
+  static const Color darkBackground = Color(0xFF0A0C1B);
+  static const Color darkPurpleBackground = Color(0xFF1A0F2E);
+  static const Color gridBackground = Color(0xFF131626);
+  static const Color emptyTileColor = Color(0xFF1F2335);
   
   // 数字块配色
   static Color getTileBackgroundColor(int value) {
@@ -24,54 +26,83 @@ class AppTheme {
   }
   
   // 获取方块的渐变色
-  static LinearGradient getTileGradient(int value) {
+  static Gradient getTileGradient(int value) {
     switch (value) {
       case 2:
+        return const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFE5B4), Color(0xFFFFD194)],
+        );
       case 4:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFFF5D1), Color(0xFFFFEBA3)],
+          colors: [Color(0xFFFFCC80), Color(0xFFFFB74D)],
         );
       case 8:
+        return const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFF8A65), Color(0xFFFF7043)],
+        );
       case 16:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFFB347), Color(0xFFFF6B6B)],
+          colors: [Color(0xFFFF5252), Color(0xFFFF1744)],
+          stops: [0.0, 1.0],
         );
       case 32:
+        return const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFE91E63), Color(0xFFC2185B)],
+        );
       case 64:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFF3B6C), Color(0xFFB82E8A)],
+          colors: [Color(0xFFAB47BC), Color(0xFF8E24AA)],
         );
       case 128:
+        return const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF7E57C2), Color(0xFF5E35B1)],
+          stops: [0.0, 1.0],
+        );
       case 256:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF9B59B6), Color(0xFF6C3483)],
+          colors: [Color(0xFF5C6BC0), Color(0xFF3F51B5)],
         );
       case 512:
+        return const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF00E5FF), Color(0xFF00B8D4)],
+          stops: [0.0, 1.0],
+        );
       case 1024:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF00F2FE), Color(0xFF00C9FF)],
+          colors: [Color(0xFF00E676), Color(0xFF00C853)],
         );
       case 2048:
-        return const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+        return RadialGradient(
+          center: Alignment.center,
+          radius: 0.8,
+          colors: [Color(0xFFFFD700), Color(0xFFFFC107), Color(0xFFFF9800)],
+          stops: [0.0, 0.5, 1.0],
         );
       default:
-        return const LinearGradient(
+        return LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1A2A3A), Color(0xFF0A1F3A)],
+          colors: [emptyTileColor, emptyTileColor.withOpacity(0.8)],
         );
     }
   }

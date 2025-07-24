@@ -253,4 +253,17 @@ class GameBoard {
     addRandomTile();
     addRandomTile();
   }
+  
+  // 获取当前最高的方块值
+  int getHighestTile() {
+    int highest = 0;
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        if (board[i][j] > highest) {
+          highest = board[i][j];
+        }
+      }
+    }
+    return highest;
+  }
 }
